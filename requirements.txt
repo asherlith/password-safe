@@ -1,0 +1,4 @@
+Django
+psycopg2>=2.8
+redis
+django_redis

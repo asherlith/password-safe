@@ -1,0 +1,31 @@
+services:
+ db:
+  image: postgres
+  volumes:
+   - ./data/db:/var/lib/postgresql/data
+  environment:
+   - POSTGRES_USER=postgres
+   - POSTGRES_DB=postgres
+   - POSTGRES_PASSWORD=postgres
+ web:
+  build: .
+  command: python manage.py runserver
+  volumes: 
+   - .:/code
+  ports:
+   - "8000:8000"
+  environment:
+   - POSTGRES_USER=postgres
+   - POSTGRES_DB=postgres
+   - POSTGRES_PASSWORD=postgres
+  depends_on:
+   - db
+   - redis
+ redis:
+  image: redis
+  environment:
+   - POSTGRES_USER=postgres
+   - POSTGRES_DB=postgres
+   - POSTGRES_PASSWORD=postgres
+  ports:
+   - "6379:6379"
