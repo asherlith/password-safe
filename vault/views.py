@@ -33,28 +33,6 @@ class PasswordAPI(GenericAPIView):
     serializer_class = PasswordSerializer
     permission_classes = [IsAuthenticated, ]
 
-    def get_serializer_context(self,*args,**kwargs):
-        context = super(PasswordAPI, self).get_serializer_context()
-        if kwargs:
-            try:
-                context["key"] = kwargs["data"]["key"]
-            except:
-                print("except")
-            try:
-                context["key"] = kwargs["key"]
-            except:
-                print("except2")
-        return context
-
-    def get_serializer(self, *args, **kwargs):
-        """
-        Return the serializer instance that should be used for validating and
-        deserializing input, and for serializing output.
-        """
-        serializer_class = self.get_serializer_class()
-        kwargs.setdefault('context', self.get_serializer_context(*args, **kwargs))
-        return serializer_class(*args, **kwargs)
-
     def post(self, request, *args, **kwargs):
         key = Fernet.generate_key()
         f = Fernet(key)
@@ -69,7 +47,13 @@ class PasswordAPI(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         password = serializer.save()
         return Response({
-            "password": PasswordSerializer(password, context=self.get_serializer_context(key=key)).data,
+            "password": PasswordSerializer(password, context= {
+            'request': self.request,
+            'format': self.format_kwarg,
+            'view': self,
+            'key' :key
+        }
+).data,
         })
 
 
