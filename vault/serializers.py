@@ -26,6 +26,12 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class PasswordSerializer(serializers.ModelSerializer):
+    key = serializers.SerializerMethodField()
+
     class Meta:
         model = Password
         fields = "__all__"
+
+    def get_key(self,obj):
+        key = self.context.get("key")
+        return key

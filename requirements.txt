@@ -1,6 +1,7 @@
-Django
+Django~=4.1.7
 psycopg2>=2.8
 redis
 django_redis
 djangorestframework-simplejwt
-djangorestframework
+djangorestframework~=3.14.0
+cryptography~=39.0.2
