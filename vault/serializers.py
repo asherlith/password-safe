@@ -26,12 +26,17 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class PasswordSerializer(serializers.ModelSerializer):
-    key = serializers.SerializerMethodField()
-
     class Meta:
         model = Password
-        fields = "__all__"
+        fields = ["id", "user",
+                  "password",
+                  "title",
+                  "website",
+                  "algo",
+                  "iterations", "salt"]
+        extra_kwargs = {'password': {'write_only': True}}
 
-    def get_key(self,obj):
-        key = self.context.get("key")
-        return key
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['user'] = UserSerializer(instance.user).data
+        return response
